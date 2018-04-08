@@ -19,12 +19,9 @@ public class AudioRecorder {
             int count = targetDataLine.read(buffer, 0, buffer.length);
             if (count > 0) {
                 try {
-                    DataWrap data = new DataWrap();
-                    data.buffer=buffer;
-                    data.count=count;
-                    //System.out.println("recorded: data size:"+data.count);
+                    //System.out.println("recorded: data size:"+count);
                     //FileUtils.writeByteArrayToFile(new File("E:\\temp\\send.pcm"),data.buffer,true);
-                    UdpCommunicate.getInstance().send(data);
+                    UdpCommunicate.getInstance().send(buffer,0,count);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

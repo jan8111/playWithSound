@@ -9,20 +9,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class UdpCommunicate {
 
+    public static final int PORT = 8888;
     private String host = "127.0.0.1";
     private static UdpCommunicate instance = new UdpCommunicate();
-
-    private BlockingQueue<DataWrap> queue = new LinkedBlockingQueue<>( );
-
-    public boolean send(DataWrap data) {
-        return this.queue.offer(data);
-    }
 
     public static UdpCommunicate getInstance() {
         return instance;
     }
 
     AudioPlayer playSounds = new AudioPlayer();
+    DatagramSocket socket;
 
     private UdpCommunicate() {
         try {
@@ -42,7 +38,7 @@ public class UdpCommunicate {
     }
 
     public void init() throws Exception {
-        DatagramSocket socket = new DatagramSocket(8888);
+        socket = new DatagramSocket(PORT);
 
         new Thread(() -> {
             try {
@@ -52,7 +48,7 @@ public class UdpCommunicate {
                     socket.receive(dp);
                     //System.out.println("Receive: "+dp.getAddress().getHostAddress() + ":" + dp.getData().length);
                     //FileUtils.writeByteArrayToFile(new File("E:\\temp\\Receive1.pcm"),dp.getData(),true);
-                    playSounds.write(dp.getData(),0,dp.getData().length);
+                    playSounds.write(dp.getData(), 0, dp.getData().length);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,20 +56,12 @@ public class UdpCommunicate {
                 playSounds.close();
             }
         }).start();
+   }
 
-        new Thread(() -> {
-            try {
-                System.out.println("Send: " + host);
-                DataWrap dataWrap1 = null;
-                while ((dataWrap1 = queue.take()) != null) {
-                    DatagramPacket dp = new DatagramPacket(dataWrap1.buffer, dataWrap1.count, InetAddress.getByName(host), 8888);
-                    socket.send(dp);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
 
+    public void send(byte buf[], int offset, int length) throws IOException {
+        DatagramPacket dp = new DatagramPacket(buf,offset,length, InetAddress.getByName(host), PORT);
+        socket.send(dp);
     }
 
 
