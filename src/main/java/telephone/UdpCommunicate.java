@@ -1,13 +1,9 @@
 package telephone;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.nio.charset.Charset;
-import java.nio.file.*;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -26,7 +22,7 @@ public class UdpCommunicate {
         return instance;
     }
 
-    PlaySounds playSounds = new PlaySounds();
+    AudioPlayer playSounds = new AudioPlayer();
 
     private UdpCommunicate() {
         try {
@@ -51,15 +47,12 @@ public class UdpCommunicate {
         new Thread(() -> {
             try {
                 while (true) {
-                    byte[] buf = new byte[1024];
+                    byte[] buf = new byte[playSounds.getBuffsize()];
                     DatagramPacket dp = new DatagramPacket(buf, buf.length);
                     socket.receive(dp);
-                    System.out.println("Receive: "+dp.getAddress().getHostAddress() + ":" + dp.getData().length);
-                    //playSounds.write(dp.getData(),0,dp.getData().length);
-
-
-
-
+                    //System.out.println("Receive: "+dp.getAddress().getHostAddress() + ":" + dp.getData().length);
+                    //FileUtils.writeByteArrayToFile(new File("E:\\temp\\Receive1.pcm"),dp.getData(),true);
+                    playSounds.write(dp.getData(),0,dp.getData().length);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
