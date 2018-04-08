@@ -10,8 +10,8 @@ public class AudioRecorder {
         AudioFormat audioFormat = getAudioFormat();
         DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, audioFormat);
         targetDataLine = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
-        int bufferSize = (int) (audioFormat.getSampleRate()*audioFormat.getFrameSize());
-        final byte buffer[] = new byte[bufferSize];
+        //int bufferSize = (int) (audioFormat.getSampleRate()*audioFormat.getFrameSize());
+        final byte buffer[] = new byte[getBuffzie()];
         targetDataLine.open(audioFormat);
         targetDataLine.start();
         System.out.println("recording...");
@@ -20,7 +20,6 @@ public class AudioRecorder {
             if (count > 0) {
                 try {
                     //System.out.println("recorded: data size:"+count);
-                    //FileUtils.writeByteArrayToFile(new File("E:\\temp\\send.pcm"),data.buffer,true);
                     UdpCommunicate.getInstance().send(buffer,0,count);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -36,11 +35,14 @@ public class AudioRecorder {
         targetDataLine.close();
     }
 
+    public static int getBuffzie() {
+        return 160;
+    }
 
     public static AudioFormat getAudioFormat() {
-        float sampleRate = 8000.0F;
+        float sampleRate = 6000.0F;
         // 8000,11025,16000,22050,44100
-        int sampleSizeInBits = 16;
+        int sampleSizeInBits = 8;
         // 8,16
         int channels = 1;
         // 1,2

@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static telephone.AudioRecorder.getBuffzie;
+
 public class UdpCommunicate {
 
     public static final int PORT = 8888;
@@ -29,10 +31,6 @@ public class UdpCommunicate {
         }
     }
 
-    public String getHost() {
-        return host;
-    }
-
     public void setHost(String host) {
         this.host = host;
     }
@@ -43,11 +41,10 @@ public class UdpCommunicate {
         new Thread(() -> {
             try {
                 while (true) {
-                    byte[] buf = new byte[playSounds.getBuffsize()];
+                    byte[] buf = new byte[getBuffzie()];
                     DatagramPacket dp = new DatagramPacket(buf, buf.length);
                     socket.receive(dp);
                     //System.out.println("Receive: "+dp.getAddress().getHostAddress() + ":" + dp.getData().length);
-                    //FileUtils.writeByteArrayToFile(new File("E:\\temp\\Receive1.pcm"),dp.getData(),true);
                     playSounds.write(dp.getData(), 0, dp.getData().length);
                 }
             } catch (IOException e) {

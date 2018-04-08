@@ -15,9 +15,9 @@ public class Main {
             UdpCommunicate.getInstance().setHost(args[0]);
             System.out.println("Listen sound from IP："+args[0]);
         }else{
-            System.out.println("Input the IP which you want to listen.Default is localhost." );
+            System.out.println("usage: Input the IP which you want to listen.Default is localhost." );
         }
-        System.out.println("Please Input ENTER to start..." );
+        System.out.println("Please press ENTER to record..." );
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String line = null;
